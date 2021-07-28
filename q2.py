@@ -14,6 +14,7 @@ from sklearn import metrics
 import numpy as np
 from sklearn.metrics import r2_score
 
+
 def main():
 
     # Reading in dataframe
@@ -67,13 +68,10 @@ def logistic_regression(df):
     for predicted_value in y_predict:
         test_value = y_test.values.tolist()[index]
         if predicted_value != test_value:
-            sum += (test_value - predicted_value)**2
+            sum += (test_value - predicted_value) ** 2
         index += 1
     return sum
 
-# =================
-# Quadradic
-# =================
 
 def quadradic(df):
 
@@ -91,8 +89,8 @@ def quadradic(df):
     x_test = x_test["platelets"]
 
     degree = 3
-    weights = np.polyfit(x_train, y_train, degree) 
-    model = np.poly1d(weights) 
+    weights = np.polyfit(x_train, y_train, degree)
+    model = np.poly1d(weights)
     predicted = model(x_test)
 
     index = 0
@@ -100,8 +98,9 @@ def quadradic(df):
     for predicted_value in predicted:
         test_value = y_test.values.tolist()[index]
         if predicted_value != test_value:
-            sum += (test_value - predicted_value)**2
+            sum += (test_value - predicted_value) ** 2
         index += 1
     return sum
+
 
 main()
