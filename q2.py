@@ -14,80 +14,94 @@ from sklearn import metrics
 import numpy as np
 from sklearn.metrics import r2_score
 
+def main():
 
-# Reading in dataframe
-df = pd.read_csv("data/heart_failure_clinical_records_dataset.csv")
+    # Reading in dataframe
+    df = pd.read_csv("data/heart_failure_clinical_records_dataset.csv")
 
-# ==================
-# Surviving Patients
-# ==================
+    # Separating survivors from deceased
+    df_0 = df.loc[df["DEATH_EVENT"] == 0]
+    df_1 = df.loc[df["DEATH_EVENT"] == 1]
 
-# Group 4 (x=platlets, y=serium creatinine)
-df_0 = df.loc[df["DEATH_EVENT"] == 0]
+    # =================
+    # Logistic
+    # =================
+    print("==================")
+    print("Logistic")
+    sum_0 = logistic_regression(df_0)
+    sum_1 = logistic_regression(df_1)
+    print("Survived: " + str(sum_0))
+    print("Deceased: " + str(sum_1))
 
-# Separating into x and y
-x = df_0[["platelets", "serum_creatinine"]]
-y = df_0["serum_creatinine"]
+    # =================
+    # Quadradic
+    # =================
+    print("==================")
+    print("Quadradic")
+    sum_0 = quadradic(df_0)
+    sum_1 = quadradic(df_1)
+    print("Survived: " + str(sum_0))
+    print("Deceased: " + str(sum_1))
 
-# Splitting 50:50
-x_train, x_test, y_train, y_test = train_test_split(
-    x, y, test_size=0.5, random_state=1, shuffle=True
-)
 
-# Training and testing the model
-reg = LinearRegression()
-reg.fit(x_train, y_train)
-y_predict = reg.predict(x_test)
+def logistic_regression(df):
 
-# Calculate sum of residuals squared
-index = 0
-sum = 0
-residuals = []
-for predicted_value in y_predict:
-    test_value = y_test.values.tolist()[index]
-    if predicted_value != test_value:
-        sum += (test_value - predicted_value)**2
-    index += 1
-print("For surviving patients sum of residuals squared: " + str(sum))
+    # Group 4 (x=platlets, y=serium creatinine)
+    # Separating into x and y
+    x = df[["platelets", "serum_creatinine"]]
+    y = df["serum_creatinine"]
 
-# =================
-# Deceased Patients
-# =================
+    # Splitting 50:50
+    x_train, x_test, y_train, y_test = train_test_split(
+        x, y, test_size=0.5, random_state=1, shuffle=True
+    )
 
-# Group 4 (x=platlets, y=serium creatinine)
-df_1 = df.loc[df["DEATH_EVENT"] == 1]
+    # Training and testing the model
+    reg = LinearRegression()
+    reg.fit(x_train, y_train)
+    y_predict = reg.predict(x_test)
 
-# Separating into x and y
-x = df_1[["platelets", "serum_creatinine"]]
-y = df_1["serum_creatinine"]
-
-# Splitting 50:50
-x_train, x_test, y_train, y_test = train_test_split(
-    x, y, test_size=0.5, random_state=1, shuffle=True
-)
-
-# Training and testing the model
-reg = LinearRegression()
-reg.fit(x_train, y_train)
-y_predict = reg.predict(x_test)
-
-# Calculate sum of residuals squared
-index = 0
-sum = 0
-residuals = []
-for predicted_value in y_predict:
-    test_value = y_test.values.tolist()[index]
-    if predicted_value != test_value:
-        sum += (test_value - predicted_value)**2
-    index += 1
-print("For deceased patients sum of residuals squared: " + str(sum))
+    # Calculate sum of residuals squared
+    index = 0
+    sum = 0
+    for predicted_value in y_predict:
+        test_value = y_test.values.tolist()[index]
+        if predicted_value != test_value:
+            sum += (test_value - predicted_value)**2
+        index += 1
+    return sum
 
 # =================
 # Quadradic
 # =================
 
+def quadradic(df):
 
-mymodel = np.poly1d(np.polyfit(x_train["platelets"], y_train, 3))
-print(r2_score(y_test, mymodel(x_test["platelets"])))
+    # Group 4 (x=platlets, y=serium creatinine)
+    # Separating into x and y
+    x = df[["platelets", "serum_creatinine"]]
+    y = df["serum_creatinine"]
 
+    # Splitting 50:50
+    x_train, x_test, y_train, y_test = train_test_split(
+        x, y, test_size=0.5, random_state=1, shuffle=True
+    )
 
+    x_train = x_train["platelets"]
+    x_test = x_test["platelets"]
+
+    degree = 3
+    weights = np.polyfit(x_train, y_train, degree) 
+    model = np.poly1d(weights) 
+    predicted = model(x_test)
+
+    index = 0
+    sum = 0
+    for predicted_value in predicted:
+        test_value = y_test.values.tolist()[index]
+        if predicted_value != test_value:
+            sum += (test_value - predicted_value)**2
+        index += 1
+    return sum
+
+main()
