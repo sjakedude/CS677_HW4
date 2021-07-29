@@ -53,6 +53,16 @@ def main():
     sum_1 = cubic(df_1)
     print("Survived: " + str(sum_0))
     print("Deceased: " + str(sum_1))
+    
+    # =================
+    # Cubic
+    # =================
+    print("==================")
+    print("GLM LOG X")
+    sum_0 = glm_log_x(df_0)
+    sum_1 = glm_log_x(df_1)
+    print("Survived: " + str(sum_0))
+    print("Deceased: " + str(sum_1))
 
 
 def logistic_regression(df):
@@ -76,6 +86,7 @@ def logistic_regression(df):
     sum_of_errors_squared = ((y_test - y_predict) * (y_test - y_predict)).sum()
 
     return sum_of_errors_squared
+
 
 def quadradic(df):
 
@@ -123,6 +134,31 @@ def cubic(df):
     predicted = model(x_test)
 
     sum_of_errors_squared = ((y_test - predicted) * (y_test - predicted)).sum()
+
+    return sum_of_errors_squared
+
+
+def glm_log_x(df):
+
+    # Group 4 (x=platlets, y=serium creatinine)
+    # Separating into x and y
+    x = df[["platelets", "serum_creatinine"]]
+    y = df["serum_creatinine"]
+
+    x = np.log(x)
+
+    # Splitting 50:50
+    x_train, x_test, y_train, y_test = train_test_split(
+        x, y, test_size=0.5, random_state=1, shuffle=True
+    )
+
+    # Training and testing the model
+    reg = LinearRegression()
+    reg.fit(x_train, y_train)
+    y_predict = reg.predict(x_test)
+
+    # Calculate sum of residuals squared
+    sum_of_errors_squared = ((y_test - y_predict) * (y_test - y_predict)).sum()
 
     return sum_of_errors_squared
 
