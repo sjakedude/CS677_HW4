@@ -30,19 +30,19 @@ def main():
     print("==================")
     print("Logistic")
     sum_0 = logistic_regression(df_0)
-    # sum_1 = logistic_regression(df_1)
+    sum_1 = logistic_regression(df_1)
     print("Survived: " + str(sum_0))
-    # print("Deceased: " + str(sum_1))
+    print("Deceased: " + str(sum_1))
 
-    # # =================
-    # # Quadradic
-    # # =================
-    # print("==================")
-    # print("Quadradic")
-    # sum_0 = quadradic(df_0)
-    # sum_1 = quadradic(df_1)
-    # print("Survived: " + str(sum_0))
-    # print("Deceased: " + str(sum_1))
+    # =================
+    # Quadradic
+    # =================
+    print("==================")
+    print("Quadradic")
+    sum_0 = quadradic(df_0)
+    sum_1 = quadradic(df_1)
+    print("Survived: " + str(sum_0))
+    print("Deceased: " + str(sum_1))
 
 
 def logistic_regression(df):
@@ -63,23 +63,9 @@ def logistic_regression(df):
     y_predict = reg.predict(x_test)
 
     # Calculate sum of residuals squared
-    index = 0
-    sum = 0
-    e = []
-    for predicted_value in y_predict:
-        test_value = np.float64(y_test.values.tolist()[index])
-        if predicted_value != test_value:
-            sum += (test_value - predicted_value) ** 2
-            print(type(test_value))
-            print(type(predicted_value))
-            print(abs(test_value - predicted_value))
-            exit()
-            e.append((test_value - predicted_value) ** 2)
-        index += 1
-    print("_______")
-    print(e)
-    return sum
+    sum_of_errors_squared = ((y_test - y_predict) * (y_test - y_predict)).sum()
 
+    return sum_of_errors_squared
 
 def quadradic(df):
 
@@ -101,14 +87,9 @@ def quadradic(df):
     model = np.poly1d(weights)
     predicted = model(x_test)
 
-    index = 0
-    sum = 0
-    for predicted_value in predicted:
-        test_value = y_test.values.tolist()[index]
-        if predicted_value != test_value:
-            sum += (test_value - predicted_value) ** 2
-        index += 1
-    return sum
+    sum_of_errors_squared = ((y_test - predicted) * (y_test - predicted)).sum()
+
+    return sum_of_errors_squared
 
 
 main()

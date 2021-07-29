@@ -14,8 +14,12 @@ import matplotlib.pyplot as plt
 df = pd.read_csv("data/heart_failure_clinical_records_dataset.csv")
 
 # Separating into 2 dataframes
-df_0 = df.loc[df["DEATH_EVENT"] == 0]
-df_1 = df.loc[df["DEATH_EVENT"] == 1]
+df_0 = df.loc[df["DEATH_EVENT"] == 0][
+    ["creatinine_phosphokinase", "serum_creatinine", "serum_sodium", "platelets"]
+]
+df_1 = df.loc[df["DEATH_EVENT"] == 1][
+    ["creatinine_phosphokinase", "serum_creatinine", "serum_sodium", "platelets"]
+]
 
 # Generating matrices
 plt.matshow(df_0.corr())
@@ -23,5 +27,3 @@ plt.savefig("output/M_0.pdf")
 plt.clf()
 plt.matshow(df_1.corr())
 plt.savefig("output/M_1.pdf")
-
-
