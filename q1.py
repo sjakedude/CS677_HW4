@@ -9,6 +9,8 @@ Analyzing patient data.
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
+import seaborn as sn
+
 
 # Reading in dataframe
 df = pd.read_csv("data/heart_failure_clinical_records_dataset.csv")
@@ -21,17 +23,11 @@ df_1 = df.loc[df["DEATH_EVENT"] == 1][
     ["creatinine_phosphokinase", "serum_creatinine", "serum_sodium", "platelets"]
 ]
 
-# Generating matrices
-fig = plt.figure(figsize=(17, 15))
-ax1 = fig.add_subplot(111)
-plt.imshow(df_0.corr(), cmap="hot")
-plt.colorbar()
-labels = df_0.columns.tolist()
-ax1.set_xticks(np.arange(len(labels)))
-ax1.set_yticks(np.arange(len(labels)))
-ax1.set_xticklabels(labels, rotation=90, fontsize=10)
-ax1.set_yticklabels(labels, fontsize=10)
+# Generating Matricies
+corrMatrix = df_0.corr()
+sn.heatmap(corrMatrix, annot=True)
 plt.savefig("output/M_0.pdf")
-
-plt.imshow(df_1.corr(), cmap="hot")
+plt.clf()
+corrMatrix = df_1.corr()
+sn.heatmap(corrMatrix, annot=True)
 plt.savefig("output/M_1.pdf")
