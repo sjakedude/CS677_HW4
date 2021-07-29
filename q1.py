@@ -26,8 +26,10 @@ df_1 = df.loc[df["DEATH_EVENT"] == 1][
 # Generating Matricies
 corrMatrix = df_0.corr()
 sn.heatmap(corrMatrix, annot=True)
+plt.gcf().subplots_adjust(bottom=.4, left=.3)
 plt.savefig("output/M_0.pdf")
 plt.clf()
 corrMatrix = df_1.corr()
 sn.heatmap(corrMatrix, annot=True)
+plt.gcf().subplots_adjust(bottom=.4, left=.3)
 plt.savefig("output/M_1.pdf")

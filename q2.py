@@ -17,6 +17,8 @@ from sklearn.metrics import r2_score
 
 def main():
 
+    print("Q2")
+    
     # Reading in dataframe
     df = pd.read_csv("data/heart_failure_clinical_records_dataset.csv")
 
@@ -29,9 +31,10 @@ def main():
     # =================
     print("==================")
     print("Logistic")
-    logistic_sum_0 = round(logistic_regression(df_0), 2)
-    logistic_sum_1 = round(logistic_regression(df_1), 2)
+    logistic_sum_0 = round(logistic_regression(df_0, "Survived"), 2)
     print("Survived: " + str(logistic_sum_0))
+    print("---")
+    logistic_sum_1 = round(logistic_regression(df_1, "Deceased"), 2)
     print("Deceased: " + str(logistic_sum_1))
 
     # =================
@@ -39,9 +42,10 @@ def main():
     # =================
     print("==================")
     print("Quadradic")
-    quadradic_sum_0 = round(quadradic(df_0), 2)
-    quadradic_sum_1 = round(quadradic(df_1), 2)
+    quadradic_sum_0 = round(quadradic(df_0, "Survived"), 2)
     print("Survived: " + str(quadradic_sum_0))
+    print("---")
+    quadradic_sum_1 = round(quadradic(df_1, "Deceased"), 2)
     print("Deceased: " + str(quadradic_sum_1))
 
     # =================
@@ -49,9 +53,10 @@ def main():
     # =================
     print("==================")
     print("Cubic")
-    cubic_sum_0 = round(cubic(df_0), 2)
-    cubic_sum_1 = round(cubic(df_1), 2)
+    cubic_sum_0 = round(cubic(df_0, "Survived"), 2)
     print("Survived: " + str(cubic_sum_0))
+    print("---")
+    cubic_sum_1 = round(cubic(df_1, "Deceased"), 2)
     print("Deceased: " + str(cubic_sum_1))
 
     # =================
@@ -59,9 +64,10 @@ def main():
     # =================
     print("==================")
     print("GLM LOG X")
-    glm_x_sum_0 = round(glm_log_x(df_0), 2)
-    glm_x_sum_1 = round(glm_log_x(df_1), 2)
+    glm_x_sum_0 = round(glm_log_x(df_0, "Survived"), 2)
     print("Survived: " + str(glm_x_sum_0))
+    print("---")
+    glm_x_sum_1 = round(glm_log_x(df_1, "Deceased"), 2)
     print("Deceased: " + str(glm_x_sum_1))
 
     # =================
@@ -69,9 +75,10 @@ def main():
     # =================
     print("==================")
     print("GLM LOG Y")
-    glm_y_sum_0 = round(glm_log_y(df_0), 2)
-    glm_y_sum_1 = round(glm_log_y(df_1), 2)
+    glm_y_sum_0 = round(glm_log_y(df_0, "Survived"), 2)
     print("Survived: " + str(glm_y_sum_0))
+    print("---")
+    glm_y_sum_1 = round(glm_log_y(df_1, "Deceased"), 2)
     print("Deceased: " + str(glm_y_sum_1))
     print("==================")
 
@@ -91,7 +98,7 @@ def main():
     print(table)
 
 
-def logistic_regression(df):
+def logistic_regression(df, patient_type):
 
     # Group 4 (x=platlets, y=serium creatinine)
     # Separating into x and y
@@ -106,8 +113,15 @@ def logistic_regression(df):
     # Training and testing the model
     degree = 1
     weights = np.polyfit(x_train, y_train, degree)
+    print("Weights: " + str(weights))
     model = np.poly1d(weights)
     predicted = model(x_test)
+
+    plt.plot(y_test.values.tolist(), c='blue', label="Actual")
+    plt.plot(predicted, c='red', label="Predicted")
+    plt.title("Logistic Regression for " + patient_type + " Patients")
+    plt.legend(loc="upper right")
+    plt.show()
 
     # Calculate sum of residuals squared
     sum_of_errors_squared = ((y_test - predicted) * (y_test - predicted)).sum()
@@ -115,7 +129,7 @@ def logistic_regression(df):
     return sum_of_errors_squared
 
 
-def quadradic(df):
+def quadradic(df, patient_type):
 
     # Group 4 (x=platlets, y=serium creatinine)
     # Separating into x and y
@@ -132,15 +146,22 @@ def quadradic(df):
 
     degree = 2
     weights = np.polyfit(x_train, y_train, degree)
+    print("Weights: " + str(weights))
     model = np.poly1d(weights)
     predicted = model(x_test)
+
+    plt.plot(y_test.values.tolist(), c='blue', label="Actual")
+    plt.plot(predicted, c='red', label="Predicted")
+    plt.title("Quadradic for " + patient_type + " Patients")
+    plt.legend(loc="upper right")
+    plt.show()
 
     sum_of_errors_squared = ((y_test - predicted) * (y_test - predicted)).sum()
 
     return sum_of_errors_squared
 
 
-def cubic(df):
+def cubic(df, patient_type):
 
     # Group 4 (x=platlets, y=serium creatinine)
     # Separating into x and y
@@ -157,19 +178,26 @@ def cubic(df):
 
     degree = 3
     weights = np.polyfit(x_train, y_train, degree)
+    print("Weights: " + str(weights))
     model = np.poly1d(weights)
     predicted = model(x_test)
+
+    plt.plot(y_test.values.tolist(), c='blue', label="Actual")
+    plt.plot(predicted, c='red', label="Predicted")
+    plt.title("Cubic for " + patient_type + " Patients")
+    plt.legend(loc="upper right")
+    plt.show()
 
     sum_of_errors_squared = ((y_test - predicted) * (y_test - predicted)).sum()
 
     return sum_of_errors_squared
 
 
-def glm_log_x(df):
+def glm_log_x(df, patient_type):
 
     # Group 4 (x=platlets, y=serium creatinine)
     # Separating into x and y
-    x = df[["platelets", "serum_creatinine"]]
+    x = df["platelets"]
     y = df["serum_creatinine"]
 
     x = np.log(x)
@@ -180,21 +208,29 @@ def glm_log_x(df):
     )
 
     # Training and testing the model
-    reg = LinearRegression()
-    reg.fit(x_train, y_train)
-    y_predict = reg.predict(x_test)
+    degree = 1
+    weights = np.polyfit(x_train, y_train, degree)
+    print("Weights: " + str(weights))
+    model = np.poly1d(weights)
+    predicted = model(x_test)
+
+    plt.plot(y_test.values.tolist(), c='blue', label="Actual")
+    plt.plot(predicted, c='red', label="Predicted")
+    plt.title("GLM log(x) for " + patient_type + " Patients")
+    plt.legend(loc="upper right")
+    plt.show()
 
     # Calculate sum of residuals squared
-    sum_of_errors_squared = ((y_test - y_predict) * (y_test - y_predict)).sum()
+    sum_of_errors_squared = ((y_test - predicted) * (y_test - predicted)).sum()
 
     return sum_of_errors_squared
 
 
-def glm_log_y(df):
+def glm_log_y(df, patient_type):
 
     # Group 4 (x=platlets, y=serium creatinine)
     # Separating into x and y
-    x = df[["platelets", "serum_creatinine"]]
+    x = df["platelets"]
     y = df["serum_creatinine"]
 
     y = np.log(y)
@@ -205,12 +241,20 @@ def glm_log_y(df):
     )
 
     # Training and testing the model
-    reg = LinearRegression()
-    reg.fit(x_train, y_train)
-    y_predict = reg.predict(x_test)
+    degree = 1
+    weights = np.polyfit(x_train, y_train, degree)
+    print("Weights: " + str(weights))
+    model = np.poly1d(weights)
+    predicted = model(x_test)
+
+    plt.plot(y_test.values.tolist(), c='blue', label="Actual")
+    plt.plot(predicted, c='red', label="Predicted")
+    plt.title("GLM log(y) for " + patient_type + " Patients")
+    plt.legend(loc="upper right")
+    plt.show()
 
     # Calculate sum of residuals squared
-    sum_of_errors_squared = ((y_test - y_predict) * (y_test - y_predict)).sum()
+    sum_of_errors_squared = ((y_test - predicted) * (y_test - predicted)).sum()
 
     return sum_of_errors_squared
 
