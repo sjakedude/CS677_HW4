@@ -44,6 +44,16 @@ def main():
     print("Survived: " + str(sum_0))
     print("Deceased: " + str(sum_1))
 
+    # =================
+    # Cubic
+    # =================
+    print("==================")
+    print("Cubic")
+    sum_0 = cubic(df_0)
+    sum_1 = cubic(df_1)
+    print("Survived: " + str(sum_0))
+    print("Deceased: " + str(sum_1))
+
 
 def logistic_regression(df):
 
@@ -68,6 +78,31 @@ def logistic_regression(df):
     return sum_of_errors_squared
 
 def quadradic(df):
+
+    # Group 4 (x=platlets, y=serium creatinine)
+    # Separating into x and y
+    x = df[["platelets", "serum_creatinine"]]
+    y = df["serum_creatinine"]
+
+    # Splitting 50:50
+    x_train, x_test, y_train, y_test = train_test_split(
+        x, y, test_size=0.5, random_state=1, shuffle=True
+    )
+
+    x_train = x_train["platelets"]
+    x_test = x_test["platelets"]
+
+    degree = 2
+    weights = np.polyfit(x_train, y_train, degree)
+    model = np.poly1d(weights)
+    predicted = model(x_test)
+
+    sum_of_errors_squared = ((y_test - predicted) * (y_test - predicted)).sum()
+
+    return sum_of_errors_squared
+
+
+def cubic(df):
 
     # Group 4 (x=platlets, y=serium creatinine)
     # Separating into x and y
