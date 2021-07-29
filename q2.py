@@ -29,47 +29,73 @@ def main():
     # =================
     print("==================")
     print("Logistic")
-    sum_0 = logistic_regression(df_0)
-    sum_1 = logistic_regression(df_1)
-    print("Survived: " + str(sum_0))
-    print("Deceased: " + str(sum_1))
+    logistic_sum_0 = round(logistic_regression(df_0), 2)
+    logistic_sum_1 = round(logistic_regression(df_1), 2)
+    print("Survived: " + str(logistic_sum_0))
+    print("Deceased: " + str(logistic_sum_1))
 
     # =================
     # Quadradic
     # =================
     print("==================")
     print("Quadradic")
-    sum_0 = quadradic(df_0)
-    sum_1 = quadradic(df_1)
-    print("Survived: " + str(sum_0))
-    print("Deceased: " + str(sum_1))
+    quadradic_sum_0 = round(quadradic(df_0), 2)
+    quadradic_sum_1 = round(quadradic(df_1), 2)
+    print("Survived: " + str(quadradic_sum_0))
+    print("Deceased: " + str(quadradic_sum_1))
 
     # =================
     # Cubic
     # =================
     print("==================")
     print("Cubic")
-    sum_0 = cubic(df_0)
-    sum_1 = cubic(df_1)
-    print("Survived: " + str(sum_0))
-    print("Deceased: " + str(sum_1))
-    
+    cubic_sum_0 = round(cubic(df_0), 2)
+    cubic_sum_1 = round(cubic(df_1), 2)
+    print("Survived: " + str(cubic_sum_0))
+    print("Deceased: " + str(cubic_sum_1))
+
     # =================
-    # Cubic
+    # GLM LOG(X)
     # =================
     print("==================")
     print("GLM LOG X")
-    sum_0 = glm_log_x(df_0)
-    sum_1 = glm_log_x(df_1)
-    print("Survived: " + str(sum_0))
-    print("Deceased: " + str(sum_1))
+    glm_x_sum_0 = round(glm_log_x(df_0), 2)
+    glm_x_sum_1 = round(glm_log_x(df_1), 2)
+    print("Survived: " + str(glm_x_sum_0))
+    print("Deceased: " + str(glm_x_sum_1))
+
+    # =================
+    # GLM LOG(Y)
+    # =================
+    print("==================")
+    print("GLM LOG Y")
+    glm_y_sum_0 = round(glm_log_y(df_0), 2)
+    glm_y_sum_1 = round(glm_log_y(df_1), 2)
+    print("Survived: " + str(glm_y_sum_0))
+    print("Deceased: " + str(glm_y_sum_1))
+    print("==================")
+
+    print("TABLE FOR Q3")
+    print("==================")
+    table = pd.DataFrame(
+        [
+            ["y = ax + b", str(logistic_sum_0), str(logistic_sum_1)],
+            ["y = ax2 + bx + c", str(quadradic_sum_0), str(quadradic_sum_1)],
+            ["y = ax3 + bx2 + cx + d", str(cubic_sum_0), str(cubic_sum_1)],
+            ["y = a log x + b", str(glm_x_sum_0), str(glm_x_sum_1)],
+            ["log y = a log x + b", str(glm_y_sum_0), str(glm_y_sum_1)],
+        ],
+        index=[1, 2, 3, 4, 5],
+        columns=["Model", "SSE - DEATH_EVENT 0", "SSE - DEATH_EVENT 0"],
+    )
+    print(table)
 
 
 def logistic_regression(df):
 
     # Group 4 (x=platlets, y=serium creatinine)
     # Separating into x and y
-    x = df[["platelets", "serum_creatinine"]]
+    x = df["platelets"]
     y = df["serum_creatinine"]
 
     # Splitting 50:50
@@ -78,12 +104,13 @@ def logistic_regression(df):
     )
 
     # Training and testing the model
-    reg = LinearRegression()
-    reg.fit(x_train, y_train)
-    y_predict = reg.predict(x_test)
+    degree = 1
+    weights = np.polyfit(x_train, y_train, degree)
+    model = np.poly1d(weights)
+    predicted = model(x_test)
 
     # Calculate sum of residuals squared
-    sum_of_errors_squared = ((y_test - y_predict) * (y_test - y_predict)).sum()
+    sum_of_errors_squared = ((y_test - predicted) * (y_test - predicted)).sum()
 
     return sum_of_errors_squared
 
@@ -146,6 +173,31 @@ def glm_log_x(df):
     y = df["serum_creatinine"]
 
     x = np.log(x)
+
+    # Splitting 50:50
+    x_train, x_test, y_train, y_test = train_test_split(
+        x, y, test_size=0.5, random_state=1, shuffle=True
+    )
+
+    # Training and testing the model
+    reg = LinearRegression()
+    reg.fit(x_train, y_train)
+    y_predict = reg.predict(x_test)
+
+    # Calculate sum of residuals squared
+    sum_of_errors_squared = ((y_test - y_predict) * (y_test - y_predict)).sum()
+
+    return sum_of_errors_squared
+
+
+def glm_log_y(df):
+
+    # Group 4 (x=platlets, y=serium creatinine)
+    # Separating into x and y
+    x = df[["platelets", "serum_creatinine"]]
+    y = df["serum_creatinine"]
+
+    y = np.log(y)
 
     # Splitting 50:50
     x_train, x_test, y_train, y_test = train_test_split(
