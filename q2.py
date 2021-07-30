@@ -27,15 +27,15 @@ def main():
     df_1 = df.loc[df["DEATH_EVENT"] == 1]
 
     # =================
-    # Logistic
+    # Linear
     # =================
     print("==================")
-    print("Logistic")
-    logistic_sum_0 = round(logistic_regression(df_0, "Survived"), 2)
-    print("Survived: " + str(logistic_sum_0))
+    print("Linear")
+    linear_sum_0 = round(linear_regression(df_0, "Survived"), 2)
+    print("Survived: " + str(linear_sum_0))
     print("---")
-    logistic_sum_1 = round(logistic_regression(df_1, "Deceased"), 2)
-    print("Deceased: " + str(logistic_sum_1))
+    linear_sum_1 = round(linear_regression(df_1, "Deceased"), 2)
+    print("Deceased: " + str(linear_sum_1))
 
     # =================
     # Quadradic
@@ -86,7 +86,7 @@ def main():
     print("==================")
     table = pd.DataFrame(
         [
-            ["y = ax + b", str(logistic_sum_0), str(logistic_sum_1)],
+            ["y = ax + b", str(linear_sum_0), str(linear_sum_1)],
             ["y = ax2 + bx + c", str(quadradic_sum_0), str(quadradic_sum_1)],
             ["y = ax3 + bx2 + cx + d", str(cubic_sum_0), str(cubic_sum_1)],
             ["y = a log x + b", str(glm_x_sum_0), str(glm_x_sum_1)],
@@ -98,7 +98,7 @@ def main():
     print(table)
 
 
-def logistic_regression(df, patient_type):
+def linear_regression(df, patient_type):
 
     # Group 4 (x=platlets, y=serium creatinine)
     # Separating into x and y
