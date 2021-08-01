@@ -70,15 +70,15 @@ def main():
     glm_x_sum_1 = round(glm_log_x(df_1, "Deceased"), 2)
     print("Deceased: " + str(glm_x_sum_1))
 
-    # =================
-    # GLM LOG(Y)
-    # =================
+    # =====================
+    # GLM LOG(Y) and LOG(X)
+    # =====================
     print("==================")
-    print("GLM LOG Y")
-    glm_y_sum_0 = round(glm_log_y(df_0, "Survived"), 2)
+    print("GLM LOG Y AND LOG X")
+    glm_y_sum_0 = round(glm_log_x_and_log_y(df_0, "Survived"), 2)
     print("Survived: " + str(glm_y_sum_0))
     print("---")
-    glm_y_sum_1 = round(glm_log_y(df_1, "Deceased"), 2)
+    glm_y_sum_1 = round(glm_log_x_and_log_y(df_1, "Deceased"), 2)
     print("Deceased: " + str(glm_y_sum_1))
     print("==================")
 
@@ -117,8 +117,7 @@ def linear_regression(df, patient_type):
     model = np.poly1d(weights)
     predicted = model(x_test)
 
-    plt.plot(y_test.values.tolist(), c='blue', label="Actual")
-    plt.plot(predicted, c='red', label="Predicted")
+    plt.plot(x_test, y_test, "s", x_test, predicted, "s")
     plt.title("Logistic Regression for " + patient_type + " Patients")
     plt.legend(loc="upper right")
     plt.show()
@@ -150,8 +149,7 @@ def quadradic(df, patient_type):
     model = np.poly1d(weights)
     predicted = model(x_test)
 
-    plt.plot(y_test.values.tolist(), c='blue', label="Actual")
-    plt.plot(predicted, c='red', label="Predicted")
+    plt.plot(x_test, y_test, "s", x_test, predicted, "s")
     plt.title("Quadradic for " + patient_type + " Patients")
     plt.legend(loc="upper right")
     plt.show()
@@ -182,8 +180,7 @@ def cubic(df, patient_type):
     model = np.poly1d(weights)
     predicted = model(x_test)
 
-    plt.plot(y_test.values.tolist(), c='blue', label="Actual")
-    plt.plot(predicted, c='red', label="Predicted")
+    plt.plot(x_test, y_test, "s", x_test, predicted, "s")
     plt.title("Cubic for " + patient_type + " Patients")
     plt.legend(loc="upper right")
     plt.show()
@@ -214,8 +211,7 @@ def glm_log_x(df, patient_type):
     model = np.poly1d(weights)
     predicted = model(x_test)
 
-    plt.plot(y_test.values.tolist(), c='blue', label="Actual")
-    plt.plot(predicted, c='red', label="Predicted")
+    plt.plot(x_test, y_test, "s", x_test, predicted, "s")
     plt.title("GLM log(x) for " + patient_type + " Patients")
     plt.legend(loc="upper right")
     plt.show()
@@ -226,19 +222,24 @@ def glm_log_x(df, patient_type):
     return sum_of_errors_squared
 
 
-def glm_log_y(df, patient_type):
+def glm_log_x_and_log_y(df, patient_type):
 
     # Group 4 (x=platlets, y=serium creatinine)
     # Separating into x and y
     x = df["platelets"]
     y = df["serum_creatinine"]
 
+    x = np.log(x)
     y = np.log(y)
 
     # Splitting 50:50
     x_train, x_test, y_train, y_test = train_test_split(
         x, y, test_size=0.5, random_state=1, shuffle=True
     )
+
+
+    print(y_train)
+    print(y_test)
 
     # Training and testing the model
     degree = 1
@@ -247,9 +248,8 @@ def glm_log_y(df, patient_type):
     model = np.poly1d(weights)
     predicted = model(x_test)
 
-    plt.plot(y_test.values.tolist(), c='blue', label="Actual")
-    plt.plot(predicted, c='red', label="Predicted")
-    plt.title("GLM log(y) for " + patient_type + " Patients")
+    plt.plot(x_test, y_test, "s", x_test, predicted, "s")
+    plt.title("GLM log(y) and log(x) for " + patient_type + " Patients")
     plt.legend(loc="upper right")
     plt.show()
 
